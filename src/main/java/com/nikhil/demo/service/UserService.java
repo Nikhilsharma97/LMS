@@ -133,41 +133,65 @@ public class UserService {
    	
    	////// returing a book/////////
    	
+//   	public String returnBook1(int userId,int bookId) {
+//   		List<User> us=userRapo.findAll();
+//   		User u = new User();
+//   		for(User u1 :us) {
+//   			if(u1.getUserId()==userId) {
+//   				u=u1;
+//   			}
+//   		}
+//   		List<Books>book=u.getBook();
+//   		for(Books b :book) {
+//   		
+//   			          if(b.getBookId()==bookId) {
+//   				
+////   				if(b.getCurrentStatus().equalsIgnoreCase("not")) {
+//   			   		Shelves sh= b.getShelve();
+//   			   		int count=sh.getBookCount()+1;
+//   			   		sh.setBookCount(count);
+//   			   	    b.setCurrentStatus("available");
+//   			   	    u.getBook().remove(b);
+//   			   	    userRapo.save(u);
+//   			   	    bookRepo.save(b);
+//   			          }
+//   		      else {
+//   			        return"book is not issued to that user";	
+//   		          }  
+//   		
+//   		}
+//   		return "book returned";
+//   	}
+
+   	
    	public String returnBook(int userId,int bookId) {
-   		List<User> us=userRapo.findAll();
-   		User u = new User();
-   		for(User u1 :us) {
-   			if(u1.getUserId()==userId) {
-   				u=u1;
+   		 User u=userRapo.findById(userId).orElse(null);
+   		List<Books>bookList=u.getBook();
+   		Books bob=new Books();
+   		
+   		for(Books b:bookList) {
+   			if(b.getBookId()==bookId) {
+   				bob=b;
+   				Shelves sh= b.getShelve();
+			   		int count=sh.getBookCount()+1;
+			   		sh.setBookCount(count);
+			   	    b.setCurrentStatus("available");
+			   	    
+			   	 bookRepo.save(bob);
+   				   			}
+   			else {
+   				return"book cant return as cant assign to that user";
    			}
    		}
-   		List<Books>book=u.getBook();
-   		for(Books b :book) {
-   		
-   			          if(b.getBookId()==bookId) {
-   				
-//   				if(b.getCurrentStatus().equalsIgnoreCase("not")) {
-   			   		Shelves sh= b.getShelve();
-   			   		int count=sh.getBookCount()+1;
-   			   		sh.setBookCount(count);
-   			   	    b.setCurrentStatus("available");
-   			   	    u.getBook().remove(b);
-   			   	    userRapo.save(u);
-   			   	    bookRepo.save(b);
-   			   	
-   			   		
+   		u.getBook().remove(bob);
+   		    userRapo.save(u);
+			
 
-   			          }
+   		return "book return";
    		
-   		      else {
-   			        return"book is not issued to that user";	
-   		          }  
-   		
-   		
-   		}
-   		return "book returned";
    	}
-
+   	
+   	
 	
 	
 }
